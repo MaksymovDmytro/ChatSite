@@ -6,6 +6,7 @@ Requirements:
   2) redis-server
 
 Functionality:
+
   Authentication:
     1) Login (accounts/login)
     2) Logout (accounts/logout)
@@ -16,5 +17,5 @@ Functionality:
     3) List created chatrooms (messages/)
     
 Restrictions:
-1) Can only create new user with admin iterface (admin/)
-2) Can only create new chatroom by appending username to url messages/<username>)
+  1) Can only create new user with admin iterface (admin/)
+  2) Can only create new chatroom by appending username to url messages/<username>)
