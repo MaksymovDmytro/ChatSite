@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block navigation %}
+    {% include 'chat_app/navigation.html' %}
+{% endblock %}
+{% block content %}
+    {% for thread in threads %}
+    <div class="card mt-2">
+        <div class="card-body">
+            <h5 class="card-title">{% if user != thread.receiver %}{{ thread.receiver }}{% else %}{{ thread.sender }}{% endif %}</h5>
+            <a href="{% if user != thread.receiver %}
+                         {% url 'chat_app:chat_thread' username=thread.receiver %}
+                     {% else %}
+                         {% url 'chat_app:chat_thread' username=thread.sender %}
+                     {% endif %}"
+               class="btn btn-primary">Start chat</a>
+        </div>
+     </div>
+    {% endfor %}
+{% endblock %}
+
+

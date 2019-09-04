@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <script>window.location = '/messages/'</script>
+    {% else %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="jumbotron">
+                <h1>Login</h1>
+                <hr class="my-4">
+                <div class="form-group">
+                {% for elem in form.visible_fields %}
+                    <label>{{ elem.label }}:</label>
+                    <br>
+                    <p>{{ elem }}</p>
+                {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block navigation %}
+    {% include 'chat_app/navigation.html' %}
+{% endblock %}
+{% block content %}
+    <h3>Chat with {% if user != object.receiver %}{{ object.receiver }}{% else %}{{ object.sender }}{% endif %}</h3>
+    <div id="chat-div" class="container" style=" height:600px; overflow-y: scroll; overflow-x: hidden">
+        <ul id='chat-items' class="list-group">
+        {% for chat in object.chatmessage_set.all %}
+            <li class="list-group-item mw-300 ">
+                <div class="d-flex justify-content-between">
+                    <h5 class="mb-1">{{ chat.user }}:</h5>
+                    <small>{{ thread.timestamp }}</small>
+                </div>
+                <p class="mb-1">{{ chat.message }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <form id='form' method='POST'> {% csrf_token %}
+        {{form.as_p }}
+        <input type='submit' class='btn btn-primary' value="Send">
+    </form>
+
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
+    <script>
+    // websocket scripts
+    var loc = window.location
+    var form_data = $("#form")
+    var ws_prefix = (loc.protocol == 'https:') ? 'wss://':'ws://'
+    var endpoint = ws_prefix + loc.host + loc.pathname
+    var socket = new ReconnectingWebSocket(endpoint)
+    var chat_items = $('#chat-items')
+    var chat_div = document.getElementById("chat-div")
+
+    socket.onmessage = function (e) {
+        console.log('message', e)
+        var new_message = JSON.parse(e.data)
+        html_string= '<li class="list-group-item"><div class="d-flex justify-content-between"><h5 class="mb-1">' + new_message.user + ':</h5><small>' + new_message.time + '</small></div><p class="mb-1">' + new_message.msg + '</p></li>'
+        chat_items.append(html_string)
+        chat_div.scrollTop = chat_div.scrollHeight;
+    }
+
+    socket.onopen = function (e) {
+        console.log('open', e)
+        form_data.submit(function (event) {
+            event.preventDefault()
+            data = $('#id_message').val()
+            msg = {'msg': data,}
+            socket.send(JSON.stringify(msg))
+            form_data[0].reset()
+        })
+    }
+
+    socket.onerror = function (e) {
+        console.log('error', e)
+    }
+
+    socket.onclose = function (e) {
+        console.log('close', e)
+    }
+    </script>
+{% endblock %}

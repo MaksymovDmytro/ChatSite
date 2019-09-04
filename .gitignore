@@ -1,0 +1,10 @@
+# Files
+*.pyc
+
+# Folders
+.idea
+venv
+__pycache__
+
+
+
