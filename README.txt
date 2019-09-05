@@ -1,5 +1,11 @@
 # ChatSite
-A simple chat app created with django + channels + channels_redis
+A simple chat app created with django + channels + channels_redis. It's running on localhost.
+
+2 admin users pre-created in db attached:
+1) Username: Vasya
+2) Username: Petya
+Password: 1q
+
 
 
 Requirements:
