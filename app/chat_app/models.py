@@ -7,7 +7,7 @@ class ThreadManager(models.Manager):
     def by_user(self, user):
         qlookup = Q(receiver=user) | Q(sender=user)
         qlookup2 = Q(receiver=user) & Q(sender=user)
-        qs = self.get_queryset().filter(qlookup).exclude(qlookup2).distinct()
+        qs = self.get_queryset().filter(qlookup).exclude(qlookup2)
         return qs
 
     def get_or_new(self, user1, username2):
@@ -18,7 +18,7 @@ class ThreadManager(models.Manager):
         # Both queues are aming to find a thread combination of two users
         qlookup1 = Q(receiver__username=username1) & Q(sender__username=username2)
         qlookup2 = Q(receiver__username=username2) & Q(sender__username=username1)
-        qs = self.get_queryset().filter(qlookup1 | qlookup2).distinct()
+        qs = self.get_queryset().filter(qlookup1 | qlookup2)
         # If only one result found, return it
         if qs.count() == 1:
             return qs.first(), False
