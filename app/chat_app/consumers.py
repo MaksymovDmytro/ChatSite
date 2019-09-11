@@ -1,6 +1,4 @@
-import asyncio
 import json
-from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async

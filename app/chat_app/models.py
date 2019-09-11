@@ -24,7 +24,7 @@ class ThreadManager(models.Manager):
             return qs.first(), False
         # If more than one result found, return latest one
         elif qs.count() > 1:
-            return qs.order_by('timestamp').first(), False
+            return qs.order_by('timestamp').last(), False
         else:
             # If none found then create one
             user_class = user1.__class__
@@ -32,8 +32,8 @@ class ThreadManager(models.Manager):
             # User can't send messages to himself
             if user1 != user2:
                 obj = self.model(
-                    receiver=user1,
-                    sender=user2
+                    receiver=user2,
+                    sender=user1
                 )
                 obj.save()
                 return obj, True
@@ -43,14 +43,12 @@ class ThreadManager(models.Manager):
 class Thread(models.Model):
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chat_thread_receiver')
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chat_thread_sender')
-    # updated = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     objects = ThreadManager()
 
-    @property
-    def room_group_name(self):
-        return f'chat_{self.id}'
+    def __str__(self):
+        return f'Sent by {self.sender} to {self.receiver}'
 
 
 class ChatMessage(models.Model):
